@@ -6,8 +6,6 @@ var mysql = require('mysql');
 var connection = require('express-myconnection');
 const { v4: uuidv4 } = require('uuid');
 const ResultSet = require('mysql/lib/protocol/ResultSet');
-var nodemailer = require('nodemailer');
-const xoauth2 = require('xoauth2');
 
 router.get('/hello', function (req, res) {
   res.json('hello world!')
@@ -17,15 +15,16 @@ router.get('/countries', function (req, res) {
 
   let con = mysql.createConnection({
 
-    host: 'localhost', //'localhost',
-    user: 'root',
-    password: '',
-    port: 3306, //port mysql
+    host: 'db-mysql-nyc3-84887-do-user-10953235-0.b.db.ondigitalocean.com', 
+    user: 'doadmin',
+    password: 'FnOnoUfG0lUFdcrx',
+    port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 60000
+    connectTimeout: 6000
+
   });
-  con.connect(function (err) {
+    con.connect(function (err) {
 
     con.query("SELECT code, name FROM country", function (error, results, fields) {
       if (error) { res.json(""); }
@@ -38,18 +37,20 @@ router.post('/userExists', function (req, res) {
 
   let con = mysql.createConnection({
 
-    host: 'localhost', //'localhost',
-    user: 'root',
-    password: '',
-    port: 3306, //port mysql
+    host: 'db-mysql-nyc3-84887-do-user-10953235-0.b.db.ondigitalocean.com', 
+    user: 'doadmin',
+    password: 'FnOnoUfG0lUFdcrx',
+    port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 60000
+    connectTimeout: 6000
+
   });
+
   var table = req.isBusiness ? "business" : "user";
   con.connect(function (err) {
 
-    con.query("SELECT * FROM" + table +"where email = ?", req.body.email, function (error, results, fields) {
+    con.query("SELECT * FROM " + table +" where email = ?", req.body.email, function (error, results, fields) {
       if (error) { res.json(""); }
       else if (results.length > 0) res.json(results[0].email);
       else res.json(false);
@@ -61,15 +62,15 @@ router.post('/userExists', function (req, res) {
 router.post('/add-user', function (req, res) {
   let con = mysql.createConnection({
 
-    host: 'localhost', //'localhost',
-    user: 'root',
-    password: '',
-    port: 3306, //port mysql
+    host: 'db-mysql-nyc3-84887-do-user-10953235-0.b.db.ondigitalocean.com', 
+    user: 'doadmin',
+    password: 'FnOnoUfG0lUFdcrx',
+    port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 60000
+    connectTimeout: 6000
 
-  }); //or single
+  });
   var uuid = uuidv4();
   var datetime = new Date();
   var email = req.body.email;
@@ -97,15 +98,15 @@ router.post('/add-user', function (req, res) {
 router.post('/add-business', function (req, res) {
   let con = mysql.createConnection({
 
-    host: 'localhost', //'localhost',
-    user: 'root',
-    password: 'Amirejaz2412',
-    port: 3306, //port mysql
+    host: 'db-mysql-nyc3-84887-do-user-10953235-0.b.db.ondigitalocean.com', 
+    user: 'doadmin',
+    password: 'FnOnoUfG0lUFdcrx',
+    port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 60000
+    connectTimeout: 6000
 
-  }); //or single
+  });
   var uuid = uuidv4();
   var datetime = new Date();
   var email = req.body.email;
