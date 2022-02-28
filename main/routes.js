@@ -1,11 +1,7 @@
 var express = require('express')
-
 var router = express.Router()
-const bodyParser = require('body-parser');
 var mysql = require('mysql');
-var connection = require('express-myconnection');
 const { v4: uuidv4 } = require('uuid');
-const ResultSet = require('mysql/lib/protocol/ResultSet');
 
 router.get('/hello', function (req, res) {
   res.json('hello world!')
@@ -21,7 +17,7 @@ router.get('/countries', function (req, res) {
     port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 6000
+    connectTimeout: 60000
 
   });
     con.connect(function (err) {
@@ -29,6 +25,7 @@ router.get('/countries', function (req, res) {
     con.query("SELECT code, name FROM country", function (error, results, fields) {
       if (error) { res.json(""); }
       else res.json(results);
+      con.end();
     });
   });
 })
@@ -43,7 +40,7 @@ router.post('/userExists', function (req, res) {
     port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 6000
+    connectTimeout: 60000
 
   });
 
@@ -54,6 +51,7 @@ router.post('/userExists', function (req, res) {
       if (error) { res.json(""); }
       else if (results.length > 0) res.json(results[0].email);
       else res.json(false);
+      con.end();
     });
   });
 })
@@ -68,7 +66,7 @@ router.post('/add-user', function (req, res) {
     port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 6000
+    connectTimeout: 60000
 
   });
   var uuid = uuidv4();
@@ -83,7 +81,6 @@ router.post('/add-user', function (req, res) {
   var isActive = 1;
   con.connect(function (err) {
     if (err) { throw err; }
-    console.log("Connected!");
     const result = con.query("INSERT INTO community (postal_code, country_id, is_active) VALUES ?", [[[postalcode, "1", "1"]]], async function (error, results, fields) {
       if (error)
         throw error;
@@ -91,6 +88,7 @@ router.post('/add-user', function (req, res) {
       con.query("INSERT INTO user (uuid, created_at, email, community_id, referral_id, referred_by, referred_by_user, is_active) VALUES ?", [[[uuid, datetime, email, communityId, referralCode, referredByBusiness, referredByUser, isActive]]], function (error, results, fields) {
         if (error) { res.json(""); }
         else res.json(referralCode);
+        con.end();
       });
     });
   });
@@ -104,7 +102,7 @@ router.post('/add-business', function (req, res) {
     port: 25060, //port mysql
     database: 'landingpage',
     queryTimeout: 6000,
-    connectTimeout: 6000
+    connectTimeout: 60000
 
   });
   var uuid = uuidv4();
@@ -126,6 +124,7 @@ router.post('/add-business', function (req, res) {
       con.query("INSERT INTO business (uuid, created_at, email, community_id, referral_id, referred_by, referred_by_business, is_active) VALUES ?", [[[uuid, datetime, email, communityId, referralCode, referredByBusiness, referredByUser, isActive]]], function (error, results, fields) {
         if (error) { res.json(""); }
         else res.json(referralCode);
+        con.end();
       });
     });
   });
